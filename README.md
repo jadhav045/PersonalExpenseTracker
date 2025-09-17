@@ -50,7 +50,6 @@ git clone https://github.com/JayPatil9975/Personal_Expense_Tracker.git
 ```
 2. Install Dependencies
 ```bash
-Copy code
 npm install
 ```
 3. Set Up the Database
@@ -59,6 +58,5 @@ Run the provided SQL scripts to configure the MySQL database.
 ```
 5. Start the Application
 ```bash
-Copy code
 npm start
 ```
