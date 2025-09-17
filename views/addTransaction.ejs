@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Transaction</title>
+    <!-- Bootstrap for layout assistance -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css"> <!-- Link to your own CSS file if needed -->
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #f2f2f2;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .form-container {
+            background-color: #fff;
+            padding: 30px;
+            width: 400px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-header h2 {
+            background: linear-gradient(90deg, #6a11cb, #2575fc);
+            -webkit-background-clip: text;
+            color: transparent;
+            font-size: 24px;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .form-control {
+            border-radius: 30px;
+            padding: 10px 15px;
+            font-size: 16px;
+        }
+
+        button.btn-primary {
+            width: 100%;
+            background: linear-gradient(90deg, #6a11cb, #2575fc);
+            border: none;
+            border-radius: 30px;
+            padding: 10px;
+            color: #fff;
+            font-size: 18px;
+        }
+
+        button.btn-primary:hover {
+            background: linear-gradient(90deg, #5a0fb5, #1d61e2);
+        }
+
+        .forgot-link {
+            display: block;
+            text-align: right;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #6a11cb;
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .signup-link a {
+            color: #6a11cb;
+        }
+        .nav-item{
+            margin-left: 2px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/finance/dashboard">
+            <img src="https://media.istockphoto.com/id/1296117554/vector/finance-management-rgb-color-icon.jpg?s=612x612&w=0&k=20&c=xmx_1sMrNg_Z1JC6jFyES5ecw8NZ5Tvm6p3LH9vN-vg=" alt="Gullak" height="30"> Gullak
+        </a>
+        <div class="collapse navbar-collapse justify-content-end">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a href="/finance/dashboard" class="btn btn-outline-dark nav-btn">Back to Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/finance/receipt" class="btn btn-outline-dark nav-btn">Generate Receipt</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/auth/login" class="btn btn-outline-dark nav-btn log">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="form-container">
+        <div class="form-header">
+            <h2>Add Transaction</h2>
+        </div>
+
+        <form action="/finance/add" method="POST">
+            <div class="form-group">
+                <label for="type">Transaction Type</label>
+                <select id="type" name="type" class="form-control" required>
+                    <option value="Income">Income</option>
+                    <option value="Expense">Expense</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="amount">Amount</label>
+                <input type="number" id="amount" name="amount" class="form-control" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" name="category" class="form-control" required>
+                    <% categories.forEach(category => { %>
+                        <option value="<%= category %>"><%= category %></option>
+                    <% }); %>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" class="form-control" rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Transaction</button>
+        </form>
+
+        <div class="signup-link">
+            <p>Want to manage your transactions? <a href="/finance/dashboard">Go to Dashboard</a></p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-light text-center py-3 mt-auto">
+        <p>&copy; 2024 Gullak</p>
+    </footer>
+
+    <!-- Scripts for Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

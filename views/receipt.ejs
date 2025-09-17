@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt</title>
+    <!-- Bootstrap for layout assistance -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f2f2f2;
+        }
+
+        /* Ensure that the navbar is fixed at the top */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        /* Ensure the receipt content is centered on the screen */
+        .receipt-container {
+            background-color: #fff;
+            padding: 30px;
+            width: 400px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin: 100px auto; /* Adjust the margin to account for the fixed navbar */
+            text-align: center;
+        }
+
+        .receipt-header {
+            margin-bottom: 20px;
+        }
+
+        .receipt-header h1 {
+            background: linear-gradient(90deg, #6a11cb, #2575fc);
+            -webkit-background-clip: text;
+            color: transparent;
+            font-size: 24px;
+        }
+
+        .card-body h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 20px;
+            color: #6a11cb;
+        }
+
+        .card-body p {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: linear-gradient(90deg, #6a11cb, #2575fc);
+            border: none;
+            border-radius: 30px;
+            padding: 10px;
+            color: #fff;
+            font-size: 18px;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(90deg, #5a0fb5, #1d61e2);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Ensure content below the navbar is not hidden */
+        .content {
+            padding-top: 80px; /* Adjust to give space for the fixed navbar */
+        }
+        .nav-item{
+            margin-left: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar fixed at the top -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/finance/dashboard">
+            <img src="https://media.istockphoto.com/id/1296117554/vector/finance-management-rgb-color-icon.jpg?s=612x612&w=0&k=20&c=xmx_1sMrNg_Z1JC6jFyES5ecw8NZ5Tvm6p3LH9vN-vg=" alt="Gullak" height="30"> 
+            Gullak
+        </a>
+        <div class="collapse navbar-collapse justify-content-end">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a href="/finance/dashboard" class="btn btn-outline-dark nav-btn">Back to Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/auth/login" class="btn btn-outline-dark nav-btn log">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Receipt container centered below the navbar -->
+    <div class="content">
+        <div class="receipt-container">
+            <header class="receipt-header">
+                <h1>Receipt for <%= user.name %></h1>
+            </header>
+            
+            <main>
+                <div class="card">
+                    <div class="card-body">
+                        <h2>Financial Summary</h2>
+                        <p>Total Income: ₹ <%= totalIncome.toFixed(2) %></p>
+                        <p>Total Expense: ₹ <%= totalExpense.toFixed(2) %></p>
+                        <p>Account Balance: ₹ <%= balance.toFixed(2) %></p>
+                        <button class="btn btn-primary" onclick="window.print()">Print Receipt</button>
+                    </div>
+                </div>
+            </main>
+
+            <footer>
+                <p>&copy; 2024 Your Company</p>
+            </footer>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

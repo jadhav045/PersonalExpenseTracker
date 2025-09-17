@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Gullak</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="/css/styles.css"> <!-- Your custom styles -->
+  <style>
+    /* Custom styles to centralize the total amount inside the doughnut chart */
+    .chart-container {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+
+    #transactionChart {
+      max-width: 300px;
+      margin: auto;
+    }
+
+    .total-amount {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .buttons-container {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .nav-btn{
+        margin-left: 3px;
+    }
+    .log{
+      width: 80px;
+      
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/finance/dashboard"><img src="https://media.istockphoto.com/id/1296117554/vector/finance-management-rgb-color-icon.jpg?s=612x612&w=0&k=20&c=xmx_1sMrNg_Z1JC6jFyES5ecw8NZ5Tvm6p3LH9vN-vg=" alt="Gullak" height="30"> Gullak</a>
+    <div class="collapse navbar-collapse justify-content-end">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+            <a href="/finance/add" class="btn btn-outline-dark nav-btn">Add New Transaction</a>
+        </li>
+        <li class="nav-item">
+            <a href="/finance/receipt" class="btn btn-outline-dark nav-btn">Generate Receipt</a>
+        </li>
+        <li class="nav-item">
+          <a href="/auth/login" class="btn btn-outline-dark nav-btn log"> Logout</a>
+      </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container mt-4">
+    
+    <!-- Button Section -->
+
+    <!-- Dashboard Overview Section -->
+    <div class="row">
+      <div class="col-md-6">
+        <h3>Dashboard Overview</h3>
+
+        <!-- Doughnut Chart -->
+        <div class="chart-container">
+          <canvas id="transactionChart"></canvas>
+          <div class="total-amount">
+            ₹<% if (transactions.length > 0) { %><%= transactions.reduce((sum, t) => sum + parseFloat(t.amount), 0).toFixed(2) %><% } else { %>0.00<% } %>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="d-flex justify-content-end">
+          <input type="text" id="daterange" class="form-control" style="width: 200px;">
+        </div>
+        <canvas id="lineChart" style="margin-top: 20px;"></canvas>
+      </div>
+    </div>
+
+    <!-- Transactions Log -->
+    <div class="mt-5">
+      <h3>Transactions Log</h3>
+      <% if (transactions.length > 0) { %>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Amount</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>...</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% transactions.forEach(transaction => { %>
+          <tr>
+            <td><%= new Date(transaction.date).toLocaleDateString('en-US', { weekday: 'long' }) %>, <%= new Date(transaction.date).toLocaleDateString('en-GB') %></td>
+            <td>₹<%= parseFloat(transaction.amount).toFixed(2) %></td>
+            <td><%= transaction.category %></td>
+            <td><%= transaction.description %></td>
+            <td><form action="/finance/delete/<%= transaction.id %>" method="POST"><button class="btn btn-outline-dark" >Delete</button></form></i></td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+      <% } else { %>
+      <p>No transactions found.</p>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-light text-center py-3 mt-5">
+    <p>&copy; 2024 Gullak</p>
+  </footer>
+
+  <script>
+    const transactions = <%- JSON.stringify(transactions) %>;
+  
+   // Pie Chart Data
+   const transactionData = transactions.reduce((acc, curr) => {
+  const categoryWithType = `${curr.category} (${curr.type})`; // Create label with category and type
+  const index = acc.labels.indexOf(categoryWithType);
+
+  if (index === -1) {
+    acc.labels.push(categoryWithType); // Add category and type as label
+    acc.data.push(parseFloat(curr.amount)); // Ensure amount is treated as a float
+  } else {
+    acc.data[index] += parseFloat(curr.amount); // Accumulate amounts for existing categories
+  }
+
+  return acc;
+}, { labels: [], data: [] });
+
+const ctx = document.getElementById('transactionChart').getContext('2d');
+const transactionChart = new Chart(ctx, {
+  type: 'doughnut',
+  data: {
+    labels: transactionData.labels, // Use properly constructed labels with category and type
+    datasets: [{
+      data: transactionData.data,
+      backgroundColor: ['#FF9F40', '#36A2EB', '#FF6384', '#4BC0C0', '#9966FF', '#FFCD56'],
+      borderColor: ['#FF9F40', '#36A2EB', '#FF6384', '#4BC0C0', '#9966FF', '#FFCD56'],
+      borderWidth: 1
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false } // Disable legend
+    },
+    cutout: '80%', // Creates the donut effect
+  }
+});
+
+    // Line Chart Data with Balance Calculation
+    let currentBalance = 0; // Set an initial balance if any
+    const lineChartData = transactions.map(t => {
+      if (t.type === 'income') {
+        currentBalance += parseFloat(t.amount); // Increase balance for income
+      } else if (t.type === 'expense') {
+        currentBalance -= parseFloat(t.amount); // Decrease balance for expense
+      }
+      return currentBalance.toFixed(2); // Track balance over time
+    });
+  
+    const lineCtx = document.getElementById('lineChart').getContext('2d');
+    const lineChart = new Chart(lineCtx, {
+      type: 'line',
+      data: {
+        labels: transactions.map(t => new Date(t.date).toLocaleDateString('en-GB')),
+        datasets: [{
+          label: 'Balance Over Time',
+          data: lineChartData,
+          borderColor: 'rgba(75, 192, 192, 1)',
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          fill: true,
+          tension: 0.4
+        }]
+      },
+      options: {
+        scales: {
+          y: { beginAtZero: true }
+        },
+        plugins: {
+          legend: { display: false }
+        }
+      }
+    });
+  </script>
+  
+  
+
+    // Initialize date range picker (optional, replace with your datepicker plugin)
+    document.getElementById('daterange').value = '2024-05-14 - 2024-06-13';
+  </script>
+
+</body>
+</html>
